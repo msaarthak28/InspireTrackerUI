@@ -46,6 +46,12 @@ const App: React.FC = () => {
     }
   };
 
+  const handleBlur = (index: number, updatedAtom: Atom) => {
+    if (updatedAtom._id) {
+      updateAtom(index, updatedAtom);
+    }
+  };
+
   const sortAtoms = (atoms: Atom[]) => {
     return atoms.sort((a, b) => {
       const statusOrder = {
@@ -72,7 +78,7 @@ const App: React.FC = () => {
 
   return (
     <div className="container">
-      <h1 className="title">Atomic Design Tracker</h1>
+      <h1 className="title">Component Tracker</h1>
       <div className="input-group">
         <input
           type="text"
@@ -98,13 +104,13 @@ const App: React.FC = () => {
           onChange={handleInputChange}
           placeholder="Developed By"
         />
-        <button onClick={addAtom}>Add Atom</button>
+        <button onClick={addAtom}>Add Component</button>
       </div>
 
       <table className="table">
         <thead>
           <tr>
-            <th>Atom</th>
+            <th>Component Name</th>
             <th>Status</th>
             <th>Developer</th>
           </tr>
@@ -116,13 +122,21 @@ const App: React.FC = () => {
                 <input
                   type="text"
                   value={atom.name}
-                  onChange={(e) => updateAtom(index, { ...atom, name: e.target.value })}
+                  onChange={(e) => {
+                    const updatedAtom = { ...atom, name: e.target.value };
+                    setAtoms(atoms.map((a, i) => (i === index ? updatedAtom : a)));
+                  }}
+                  onBlur={() => handleBlur(index, atom)}
                 />
               </td>
               <td>
                 <select
                   value={atom.status}
-                  onChange={(e) => updateAtom(index, { ...atom, status: e.target.value as Atom['status'] })}
+                  onChange={(e) => {
+                    const updatedAtom = { ...atom, status: e.target.value as Atom['status'] };
+                    setAtoms(atoms.map((a, i) => (i === index ? updatedAtom : a)));
+                  }}
+                  onBlur={() => handleBlur(index, atom)}
                   className={getStatusClass(atom.status)}
                 >
                   <option value="Not Started">Not Started</option>
@@ -134,7 +148,11 @@ const App: React.FC = () => {
                 <input
                   type="text"
                   value={atom.developedBy}
-                  onChange={(e) => updateAtom(index, { ...atom, developedBy: e.target.value })}
+                  onChange={(e) => {
+                    const updatedAtom = { ...atom, developedBy: e.target.value };
+                    setAtoms(atoms.map((a, i) => (i === index ? updatedAtom : a)));
+                  }}
+                  onBlur={() => handleBlur(index, atom)}
                 />
               </td>
             </tr>
