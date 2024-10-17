@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from './Loader/Loader';
+import {cubicBezier, motion, stagger} from 'framer-motion';
+
 
 interface Atom {
   _id?: string;
@@ -7,6 +10,22 @@ interface Atom {
   status: 'Not Started' | 'In Development' | 'Developed';
   developedBy: string;
 }
+
+const tableVariants = {
+  initial: {
+    opacity: 0.3,
+    y:30
+  },
+  animate:{
+    opacity: 1,
+    y:0,
+    transition: {
+      duration: 0.5,
+      ease: cubicBezier(.35, .17, .3, .86)
+    }
+  }
+}
+
 
 const App: React.FC = () => {
   const [atoms, setAtoms] = useState<Atom[]>([]);
@@ -25,7 +44,12 @@ const App: React.FC = () => {
   };
 
   const addAtom = () => {
+    if (newAtom.name === '') {
+      alert('Please enter a name for the component');
+      return;
+    }
     if (newAtom.name.trim() !== '') {
+      console.log("running");
       axios.post('https://inspiretrackerbackend.onrender.com/atoms', newAtom)
         .then((response) => {
           setAtoms(sortAtoms([...atoms, response.data]));
@@ -85,7 +109,8 @@ const App: React.FC = () => {
           name="name"
           value={newAtom.name}
           onChange={handleInputChange}
-          placeholder="Atom Name"
+          placeholder="Atom Name *"
+          required={true}
         />
         <select
           name="status"
@@ -106,8 +131,13 @@ const App: React.FC = () => {
         />
         <button onClick={addAtom}>Add Component</button>
       </div>
-
-      <table className="table">
+      {
+        atoms.length === 0 ? <Loader/> :  <motion.table
+        variants={tableVariants}
+        initial="initial"
+        animate="animate"
+        className="table"
+        >
         <thead>
           <tr>
             <th>Component Name</th>
@@ -158,7 +188,9 @@ const App: React.FC = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </motion.table>
+      }
+     
     </div>
   );
 };
