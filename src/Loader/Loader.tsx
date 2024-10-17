@@ -1,10 +1,9 @@
-import React from 'react'
 import { Triangle } from 'react-loader-spinner';
 import "./Loader.css";
 
-type Props = {}
 
-const Loader = (props: Props) => {
+
+const Loader = () => {
   return (
     <div className='loader-container'  >
         

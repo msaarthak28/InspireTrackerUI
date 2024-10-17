@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Loader from './Loader/Loader';
-import {cubicBezier, motion, stagger} from 'framer-motion';
+import {cubicBezier, motion} from 'framer-motion';
 
 
 interface Atom {
